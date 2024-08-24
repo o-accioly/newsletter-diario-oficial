@@ -164,7 +164,7 @@ def job():
     if articles_data:
         teams_webhook(articles_data)
     else:
-        teams_webhook_not_found
+        teams_webhook_not_found()
         
     
     logging.info("Busca finalizada")
@@ -174,5 +174,6 @@ schedule.every().day.at(getenv("EXTRACTION_HOUR")).do(job)
 logging.info("Iniciando o serviço de newsletter")
 
 while True:
+    logging.info("Verificando horário")
     schedule.run_pending()
     time.sleep(30)
