@@ -3,6 +3,8 @@ FROM python:3.9-slim
 
 ENV TZ=America/Sao_Paulo
 
+RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
 # Instale as dependências do sistema
 RUN apt-get update && apt-get install -y \
     wget \

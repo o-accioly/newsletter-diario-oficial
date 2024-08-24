@@ -29,6 +29,10 @@ BASE_URL = "https://www.in.gov.br"
 SEARCH_TERMS = getenv("SEARCH_TERMS")
 WEBHOOK_URL = getenv("TEAMS_URL")
 
+INTERVAL_LOOP = int(getenv("INTERVAL_LOOP", 30))
+SEND_MESSAGE = bool(getenv("SEND_MESSAGE", "True"))
+LOOP_STATUS = bool(getenv("LOOP_STATUS", "False"))
+
 
 class SeleniumManager:
     def __init__(self, headless=True):
@@ -157,10 +161,13 @@ def job():
     
     articles_data = fetch_daily_article()
     
-    # if articles_data:
-    #     teams_webhook(articles_data)
-    # else:
-    #     teams_webhook_not_found()
+    if SEND_MESSAGE:
+        if articles_data:
+            teams_webhook(articles_data)
+        else:
+            teams_webhook_not_found()
+    else:
+        logging.info("Envio de mensagem desativado pelas variáveis de ambiente")
         
     logging.info("Busca finalizada")
         
@@ -171,8 +178,11 @@ extraction_time = datetime.strptime(extraction_hour, "%H:%M").time().strftime("%
 
 schedule.every().day.at(extraction_time).do(job)
 
-logging.info(f"Iniciando o serviço de newsletter configurado para rodar as {extraction_time}")
+logging.info(f"Iniciando o serviço de newsletter DOU. \nConfigurado para rodar as {extraction_time}")
 
 while True:
+    if LOOP_STATUS: logging.info("Verificando se há tarefas agendadas")
     schedule.run_pending()
-    time.sleep(30)
+    time.sleep(INTERVAL_LOOP)
+    if LOOP_STATUS: logging.info("Aguardando próxima execução")
+    
