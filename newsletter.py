@@ -1,17 +1,17 @@
-import requests
-import smtplib
-import pymsteams
-
-import schedule
-import time
 import logging
+import schedule
+
+import time
+from datetime import datetime
+
+import pytz
+
+import pymsteams
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
 from bs4 import BeautifulSoup
@@ -21,10 +21,13 @@ from os import getenv
 
 load_dotenv()
 
+
 logging.basicConfig(format='%(asctime)s - %(message)s',
                     level=logging.INFO)
 
 BASE_URL = "https://www.in.gov.br"
+SEARCH_TERMS = getenv("SEARCH_TERMS")
+WEBHOOK_URL = getenv("TEAMS_URL")
 
 
 class SeleniumManager:
@@ -58,8 +61,6 @@ class SeleniumManager:
 
 def fetch_daily_article():
     selenium_manager = SeleniumManager()
-    
-    SEARCH_TERMS = getenv("SEARCH_TERMS")
     
     articles_data = []
     
@@ -119,8 +120,6 @@ def fetch_daily_article():
     return articles_data
         
 def teams_webhook(articles_data):
-    WEBHOOK_URL = getenv("TEAMS_URL")
-    
     logging.info("Enviando artigos para o Teams")
     
     for article in articles_data:
@@ -143,8 +142,6 @@ def teams_webhook(articles_data):
         msg.send()
 
 def teams_webhook_not_found():
-    WEBHOOK_URL = getenv("TEAMS_URL")
-    
     logging.info("Enviando mensagem de nenhum artigo encontrado")
     
     msg = pymsteams.connectorcard(WEBHOOK_URL)
@@ -158,7 +155,6 @@ def teams_webhook_not_found():
 def job():
     logging.info("Iniciando a busca por artigos")
     
-    
     articles_data = fetch_daily_article()
     
     if articles_data:
@@ -166,14 +162,17 @@ def job():
     else:
         teams_webhook_not_found()
         
-    
     logging.info("Busca finalizada")
         
-schedule.every().day.at(getenv("EXTRACTION_HOUR")).do(job)
+timezone = pytz.timezone(getenv("TIMEZONE", "America/Sao_Paulo"))
+
+extraction_hour = getenv("EXTRACTION_HOUR", "09:00")
+extraction_time = datetime.strptime(extraction_hour, "%H:%M").time().strftime("%H:%M")
+
+schedule.every().day.at(extraction_time).do(job)
 
 logging.info("Iniciando o serviço de newsletter")
 
 while True:
-    logging.info("Verificando horário")
     schedule.run_pending()
     time.sleep(30)
