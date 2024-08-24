@@ -1,0 +1,11 @@
+requests
+schedule
+
+pymsteams
+
+python-dotenv
+
+selenium
+webdriver-manager
+
+beautifulsoup4
