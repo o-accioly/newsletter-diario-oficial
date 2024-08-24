@@ -157,10 +157,10 @@ def job():
     
     articles_data = fetch_daily_article()
     
-    if articles_data:
-        teams_webhook(articles_data)
-    else:
-        teams_webhook_not_found()
+    # if articles_data:
+    #     teams_webhook(articles_data)
+    # else:
+    #     teams_webhook_not_found()
         
     logging.info("Busca finalizada")
         
