@@ -4,8 +4,8 @@ FROM python:3.9-slim
 # Defina o fuso horário
 ENV TZ=America/Sao_Paulo
 
-# Configurar DNS usando tee para evitar problemas de permissão
-RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf
+# Configurar DNS usando sh -c para evitar problemas de permissão
+RUN sh -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf'
 
 # Instale as dependências do sistema
 RUN apt-get update && apt-get install -y \
