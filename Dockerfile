@@ -1,6 +1,8 @@
 # Usar uma imagem base do Python
 FROM python:3.9-slim
 
+ENV TZ=America/Sao_Paulo
+
 # Instale as dependências do sistema
 RUN apt-get update && apt-get install -y \
     wget \
