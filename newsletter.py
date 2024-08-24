@@ -171,7 +171,7 @@ extraction_time = datetime.strptime(extraction_hour, "%H:%M").time().strftime("%
 
 schedule.every().day.at(extraction_time).do(job)
 
-logging.info("Iniciando o serviço de newsletter")
+logging.info(f"Iniciando o serviço de newsletter configurado para rodar as {extraction_time}")
 
 while True:
     schedule.run_pending()
