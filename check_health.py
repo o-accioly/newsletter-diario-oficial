@@ -66,5 +66,5 @@ except Exception as e:
     logging.error(e)
     exit(1)
     
-driver.fetch_page("https://www.in.gov.br")
+driver.fetch_page("https://www.gov.br/imprensanacional/pt-br")
 logging.info("Página carregada com sucesso")
