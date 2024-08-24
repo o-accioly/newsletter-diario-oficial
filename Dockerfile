@@ -31,6 +31,7 @@ WORKDIR /app
 # Copiar os arquivos necessários
 COPY requirements.txt requirements.txt
 COPY newsletter.py newsletter.py
+COPY check_health.py check_health.py
 
 # Instalar as dependências
 COPY requirements.txt .
