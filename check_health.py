@@ -19,6 +19,8 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from os import getenv
 
+import argparse
+
 load_dotenv()
 
 
@@ -66,5 +68,13 @@ except Exception as e:
     logging.error(e)
     exit(1)
     
-driver.fetch_page("https://www.gov.br/imprensanacional/pt-br")
+    
+logging.info("Selenium iniciado com sucesso")
+
+parser = argparse.ArgumentParser(description="Verifica a saúde do site")
+parser.add_argument("--url", type=str, help="URL do site a ser verificado")
+args = parser.parse_args()
+
+print(driver.fetch_page(args.url))
+
 logging.info("Página carregada com sucesso")
